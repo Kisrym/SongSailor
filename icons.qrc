@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>icons/pause.png</file>
+        <file>icons/avancar.png</file>
+        <file>icons/retroceder.png</file>
+        <file>icons/pause_hover.png</file>
+        <file>icons/avancar_hover.png</file>
+        <file>icons/retroceder_hover.png</file>
+        <file>icons/play.png</file>
+        <file>icons/play_hover.png</file>
+        <file>icons/random.png</file>
+        <file>icons/random_hover.png</file>
+        <file>icons/loop.png</file>
+        <file>icons/loop_hover.png</file>
+        <file>icons/playlist.png</file>
+        <file>icons/playlist_hover.png</file>
+        <file>icons/sound.png</file>
+        <file>icons/sound_hover.png</file>
+        <file>icons/music_not_found.png</file>
+    </qresource>
+</RCC>
