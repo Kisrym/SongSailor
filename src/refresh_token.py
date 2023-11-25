@@ -1,9 +1,9 @@
-import requests
+import requests, sys
 from json import load
 
 class Refresh:
     def __init__(self):
-        with open(r"config.json") as f:
+        with open(r"src/config.json") as f:
             data = load(f)
             self.refresh_token = data["refresh_token"]
             self.auth = data["auth"]
@@ -13,11 +13,11 @@ class Refresh:
                         data = {"grant_type" : "refresh_token", "refresh_token" : self.refresh_token},
                         headers = {"Authorization" : "Basic " + self.auth}
                     )
-        
+
         if len(r.json()) > 2:
             return r.json()["access_token"]
         else:
-            raise KeyError("Informações inválidas.")
+            sys.exit(2)
 
 if __name__ == "__main__":
     a = Refresh()

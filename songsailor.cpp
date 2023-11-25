@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <ctime>
 #include <algorithm>
+#include <QMenu>
 
 songsailor::songsailor(QWidget *parent)
     : QMainWindow(parent)
@@ -17,6 +18,8 @@ songsailor::songsailor(QWidget *parent)
     , audioOutput(new QAudioOutput)
 {
     ui->setupUi(this);
+
+    connect(ui->lista_musicas_player, &QListView::customContextMenuRequested, this, &songsailor::showContextMenu);
 
     ui->pause->installEventFilter(watcher);
     ui->avancar->installEventFilter(watcher);       // hover in the player buttons
@@ -28,28 +31,47 @@ songsailor::songsailor(QWidget *parent)
 
     ui->playlist_opt->hide(); // hide the playlist options (offset, amount)
 
-    // adicionando os modelos
+    // applying the models
     ui->lista_musicas_player->setModel(model);
+    ui->lista_musicas_playlist->setModel(playlistModel);
 
     tocador->setAudioOutput(audioOutput);
     this->add_music_in_list();
+    this->currentListViewChanged(); // colocando a listView atual ao iniciar o programada
+
+    for (Database::Playlist &lista : db.loadPlaylistDb()){
+        this->createPlaylistAct(lista.nome);
+    }
 
     connect(ui->random, &QCheckBox::clicked, this, [=](bool checked){if (checked){ui->random->setIcon(QIcon(":/image/icons/random_hover.png"));}});
+    connect(janela, &config::config_signal, this, &songsailor::config_slot);
+    connect(ui->paginas, &QStackedWidget::currentChanged, this, &songsailor::currentListViewChanged);
 
-    // connections
+    // Install
     connect(ui->musica, &QLineEdit::textChanged, this, &songsailor::musica_text_changed);
     connect(ui->instalar, &QPushButton::clicked, this, &songsailor::install);
 
+    // Menu
     connect(ui->musicasChange, &QPushButton::clicked, this, [=]{ui->paginas->setCurrentWidget(ui->musicas_pag);ui->terminal->clear();}); // clears the terminal too
-    connect(ui->installChange, &QPushButton::clicked, this, [=]{ui->paginas->setCurrentWidget(ui->instalar_pag);});
-
-    connect(ui->add_directory, &QPushButton::clicked, this, &songsailor::add_directory);
+    connect(ui->installChange, &QPushButton::clicked, this, [=]{ui->paginas->setCurrentWidget(ui->instalar_pag);ui->terminal->setText("Aguardando instalação...");});
 
     //Player
-    connect(ui->lista_musicas_player, &QListView::doubleClicked, this, [=]{reproduction_list.clear();});
+    connect(ui->add_directory, &QPushButton::clicked, this, &songsailor::add_directory);
+
+    connect(ui->lista_musicas_player, &QListView::doubleClicked, this, [=]{
+        reproduction_list.clear();
+        this->play();
+        this->createPlaylist();
+    });
+    connect(ui->lista_musicas_playlist, &QListView::doubleClicked, this, [=]{
+        reproduction_list.clear();
+        this->play();
+        this->createPlaylist();
+    });
+    /*
     connect(ui->lista_musicas_player, &QListView::doubleClicked, this, &songsailor::play);
     connect(ui->lista_musicas_player, &QListView::doubleClicked, this, &songsailor::createPlaylist);
-
+    */
     connect(tocador, &QMediaPlayer::durationChanged, this, [=](qint64 v){ui->slider->setMaximum(v / 1000);});
     connect(tocador, &QMediaPlayer::positionChanged, this, [=](qint64 v){ui->slider->setValue(v / 1000);});
 
@@ -68,22 +90,27 @@ songsailor::songsailor(QWidget *parent)
     connect(ui->avancar, &QPushButton::clicked, this, [=]{tocador->stop();});
     connect(ui->retroceder, &QPushButton::clicked, this, &songsailor::retroceder);
 
+    //Playlist
+    //connect(ui->playlistNome, &QLineEdit::editingFinished, this, &songsailor::nameDescriptionChanged);
+    //connect(ui->playlistDescription, &QLineEdit::editingFinished, this, &songsailor::nameDescriptionChanged);
 }
 
 songsailor::~songsailor()
 {
     delete ui;
     delete model;
+    delete playlistModel;
     delete watcher;
     delete tocador;
     delete audioOutput;
+    delete janela;
 }
 
 void songsailor::instalarMusicas(QString audio, QString type){
     QStringList arguments;
     QString path = QFileDialog::getExistingDirectory(this, "Diretório para Instalação", QDir::currentPath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-    arguments << "music_downloader.py" << "-type" << type << "-audio" << audio << "--path" << path;
+    arguments << "src/music_downloader.py" << "install" << "-type" << type << "-audio" << audio << "--path" << path;
 
     if (this->isPlaylist){
         arguments << "--offset" << ui->offset->text() << "--amount" << ui->amount->text();
@@ -94,7 +121,6 @@ void songsailor::instalarMusicas(QString audio, QString type){
 
         process.setProgram("python");
         process.setArguments(arguments);
-
         /*
         process.setReadChannel(QProcess::StandardError);
         QObject::connect(&process, &QProcess::readyReadStandardError, [&]() {
@@ -117,11 +143,20 @@ void songsailor::instalarMusicas(QString audio, QString type){
             QMetaObject::invokeMethod(this, "add_music_in_list", Qt::QueuedConnection); // equivalente a "this->add_music_in_list", só que no future
             process.deleteLater();
         }
+        else if (process.exitCode() == 2){
+            QMetaObject::invokeMethod(this, "change_config", Qt::QueuedConnection);
+            process.deleteLater();
+        }
         else {
             qDebug() << "Erro na instalação da(s) música(s)";
+            qDebug() << process.exitCode();
             process.deleteLater();
         }
     });
+}
+
+void songsailor::change_config(){
+    janela->show();
 }
 
 void songsailor::musica_text_changed(const QString musica){
@@ -182,7 +217,7 @@ void songsailor::add_directory(){
 }
 
 void songsailor::play(){
-    nomeMusicaAtual = ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0];
+    nomeMusicaAtual = currentListView->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0];
     AudioInfo musica(musicasPlayer.value(nomeMusicaAtual));
 
     QPixmap albumCover;
@@ -212,17 +247,20 @@ void songsailor::changeStateIcon(QMediaPlayer::PlaybackState estado){
 void songsailor::createPlaylist(){
     reproduction_list.clear();
     playlist.clear();
+
     if (!ui->random->isChecked()){
-        QModelIndex currentIndex = ui->lista_musicas_player->currentIndex();
+        QModelIndex currentIndex = currentListView->currentIndex(); //!
+
         for (int c = currentIndex.row(); c < model->rowCount(); c++){
             QModelIndex index = model->index(c, currentIndex.column());
-
             AudioInfo musica(musicasPlayer.value(model->data(index, Qt::DisplayRole).toString().split("\n")[0]));
 
             reproduction_list.append(musica.getTitle());
         }
         playlist = reproduction_list;
         reproduction_list.removeFirst(); // removing the current music
+        qDebug() << "reproduction_list: " << reproduction_list;
+        qDebug() << "playlist: " << playlist;
     }
     else {
         for (int c = 0; c < model->rowCount(); c++){
@@ -230,7 +268,7 @@ void songsailor::createPlaylist(){
 
             AudioInfo musica(musicasPlayer.value(model->data(index, Qt::DisplayRole).toString().split("\n")[0]));
 
-            if (ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0] != musica.getTitle()){ // removing the current music from the playlist
+            if (currentListView->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0] != musica.getTitle()){ // removing the current music from the playlist //!
                 reproduction_list.append(musica.getTitle());
             }
         }
@@ -247,7 +285,7 @@ void songsailor::musicEnded(QMediaPlayer::PlaybackState estado){
                 QModelIndex index = model->index(c, 0);
 
                 if (reproduction_list.first() == model->data(index, Qt::DisplayRole).toString().split("\n")[0]){
-                    ui->lista_musicas_player->setCurrentIndex(index);
+                    currentListView->setCurrentIndex(index); //!
                     this->play();
                     reproduction_list.remove(0);
                     break;
@@ -289,5 +327,116 @@ void songsailor::retroceder(){
     else {
         tocador->setPosition(0);
         tocador->play();
+    }
+}
+
+void songsailor::config_slot(QString client_id, QString secret_id, QString refresh_token){;
+    QStringList arguments;
+    QProcess process;
+    arguments << "src/music_downloader.py" << "config" << "-client_id" << client_id << "-secret_id" << secret_id << "-refresh_token" << refresh_token;
+
+    process.setProgram("python");
+    process.setArguments(arguments);
+
+    process.setReadChannel(QProcess::StandardError);
+    QObject::connect(&process, &QProcess::readyReadStandardError, [&]() {
+        qDebug() << process.readAllStandardError();
+    });
+
+    process.start();
+    process.waitForFinished(-1);
+
+    janela->close();
+}
+
+void songsailor::showContextMenu(const QPoint &pos){
+    QListView *listView = qobject_cast<QListView *>(sender());
+    if (!listView){
+        return;
+    }
+
+    QModelIndex index = listView->indexAt(pos);
+    if (index.isValid()){
+        QMenu menu;
+        QMenu submenu("Adicionar à playlist");
+        menu.addMenu(&submenu);
+
+        QAction *createPlaylist = submenu.addAction("Criar playlist");
+        submenu.addSeparator();
+
+        for (Database::Playlist &playlist : db.loadPlaylistDb()){
+            QAction *playlistAction = submenu.addAction(playlist.nome); // cria cada opção do context menu
+
+            connect(playlistAction, &QAction::triggered, this, [=]{
+                db.addMusicPlaylistDb(playlist.nome, ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0]); // o botão vai adicionar a musica à playlist
+            });
+        }
+
+        QAction *deleteAct = menu.addAction("Excluir faixa");
+        QAction *selectedAction = menu.exec(listView->viewport()->mapToGlobal(pos));
+        if (selectedAction == createPlaylist){
+            this->createPlaylistAct();
+        }
+        if (selectedAction == deleteAct){
+            qDebug() << "excluindo playlist";
+        }
+    }
+}
+
+void songsailor::createPlaylistAct(QString musicaNomeDb){// nome da musica vinda da database
+    QString musicaNome = (musicaNomeDb.isEmpty()) ? ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0] : musicaNomeDb; // se o nome não estiver vazio, é para carregar os dados em vez de criar
+    QPushButton *botao = new QPushButton(musicaNome);
+    AudioInfo musica(musicasPlayer.value(musicaNome));
+    QPixmap albumCover;
+
+    albumCover.loadFromData(musica.saveImage());
+    botao->setMinimumSize(QSize(0, 50));
+    botao->setIcon(QIcon(albumCover));
+    botao->setIconSize(QSize(45, 45));
+
+    ui->biblioteca->layout()->addWidget(botao);
+    connect(botao, &QPushButton::clicked, this, &songsailor::playlistPag);
+    //connect(ui->playlistNome, &QLineEdit::textEdited, this, [=](QString novoNome){botao->setText(novoNome);}); // mudando o nome do botão quando o usuário mudar o nome da playlist
+    // MODIFICAR PARA FUNCIONAR CORRETAMENTE E CONECTAR COM O SQL
+    if (musicaNomeDb.isEmpty()){
+        db.createPlaylistDb(musica.getTitle());
+        db.addMusicPlaylistDb(musica.getTitle(), musicaNome); // inicialmente é o mesmo nome
+    }
+}
+
+void songsailor::playlistPag(){
+    playlistModel->clear();
+
+    QPushButton *botao = qobject_cast<QPushButton *>(sender()); // botão que emitiu o sinal
+    QPixmap albumCover = botao->icon().pixmap(QSize(150, 150));
+    Database::Playlist playlist = db.locatePlaylistDb(botao->text());
+
+    ui->playlistNome->setText(playlist.nome);
+    ui->albumCover->setPixmap(albumCover);
+    ui->playlistDescription->setText(playlist.descricao);
+
+    for (QString &item : playlist.musicas){
+        if (!item.isEmpty()){
+            AudioInfo musica(musicasPlayer.value(item));
+            playlistModel->addItem(MusicItem(musica.getTitle(), musica.getAuthor(), musica.saveImage()));
+            ui->lista_musicas_playlist->update();
+        }
+    }
+
+    ui->paginas->setCurrentWidget(ui->playlist_pag);
+
+    disconnect(ui->playlistNome, &QLineEdit::textEdited, nullptr, nullptr);
+    connect(ui->playlistNome, &QLineEdit::textEdited, this, [=](QString novoNome){botao->setText(novoNome);});
+}
+
+void songsailor::currentListViewChanged(){
+    QWidget *currentWidget = ui->paginas->currentWidget();
+    if (currentWidget){
+        foreach(QObject *child, currentWidget->children()){
+            QListView *listView = qobject_cast<QListView*>(child);
+            if (listView){
+                currentListView = listView;
+            }
+        }
     }
 }

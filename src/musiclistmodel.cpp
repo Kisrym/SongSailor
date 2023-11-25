@@ -1,4 +1,5 @@
 #include "musiclistmodel.h"
+#include <QListView>
 
 MusicListModel::MusicListModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -47,4 +48,14 @@ bool MusicListModel::itemExists(const MusicItem &item) const{
         }
     }
     return false;
+}
+
+void MusicListModel::clear(){
+    if (m_items.isEmpty()){
+        return;
+    }
+
+    beginResetModel();
+    m_items.clear();
+    endResetModel();
 }

@@ -18,6 +18,7 @@ public:
 
     void addItem(const MusicItem &item);
     bool itemExists(const MusicItem &item) const;
+    void clear();
 
 private:
     QList<MusicItem> m_items;

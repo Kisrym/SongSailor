@@ -13,6 +13,7 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 find_package(Qt6 REQUIRED COMPONENTS Multimedia) ##
+find_package(Qt6 REQUIRED COMPONENTS Sql) ##
 
 #TAGLIB
 # instalação do taglib
@@ -28,9 +29,9 @@ set(PROJECT_SOURCES
         songsailor.h
         songsailor.ui
 
-        music_downloader.py
-        config.json
-        refresh_token.py
+        src/music_downloader.py
+        src/refresh_token.py
+        src/config.json
 
         icons.qrc
         TODO.md
@@ -42,6 +43,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         README.md
         src/audioinfo.cpp src/audioinfo.h src/buttonhoverwatcher.cpp src/buttonhoverwatcher.h src/musicitem.cpp src/musicitem.h src/musiclistmodel.cpp src/musiclistmodel.h
+        config.h config.cpp config.ui
+        src/database.h src/database.cpp
+
+
     )
 
     #configuração para o cmake realizar a linkagem corretamente
@@ -68,6 +73,7 @@ endif()
 
 target_link_libraries(songsailor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(songsailor PRIVATE Qt6::Multimedia)
+target_link_libraries(songsailor PRIVATE Qt6::Sql)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

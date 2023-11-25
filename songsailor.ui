@@ -22,11 +22,507 @@
 color: #E5E5E5</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
+    <item row="3" column="0" colspan="2">
+     <widget class="QFrame" name="bottom_menu">
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: #14213D;
+	width: 50%;
+	border-radius: 5px;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QLabel" name="albumLabel">
+           <property name="minimumSize">
+            <size>
+             <width>68</width>
+             <height>61</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>56</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel {
+	border-radius: 5px;
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="artistaLabel">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>73</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>73</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: #E5E5E5</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::RichText</enum>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QSlider" name="slider">
+             <property name="minimumSize">
+              <size>
+               <width>800</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QSlider {
+    background-color: #14213D;
+    border-radius: 5px;
+}
+
+QSlider::groove:horizontal {
+    background-color: #E5E5E5;
+    height: 5px;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+    width: 16px;
+    height: 16px;
+	border-radius: 8px;
+}
+
+QSlider::sub-page:horizontal{ /* coloca uma cor seguindo o handle */
+	background-color: #183B54
+}</string>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="random">
+               <property name="maximumSize">
+                <size>
+                 <width>49</width>
+                 <height>38</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QCheckBox {
+    background: transparent;
+    border: none; /* Remove a borda do QCheckBox */
+    padding-left: 0px;
+    spacing: 0px;
+}
+
+QCheckBox::indicator {
+	width: 0px;
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/image/icons/random.png</normaloff>:/image/icons/random.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>38</height>
+                </size>
+               </property>
+               <property name="tristate">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="retroceder">
+               <property name="maximumSize">
+                <size>
+                 <width>49</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+	border: solid;
+	background-color: #14213D;
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/image/icons/retroceder.png</normaloff>:/image/icons/retroceder.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>336</width>
+                 <height>29</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pause">
+               <property name="maximumSize">
+                <size>
+                 <width>49</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+	border: solid;
+	background-color: #14213D;
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/image/icons/pause.png</normaloff>:/image/icons/pause.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>48</width>
+                 <height>48</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="avancar">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>49</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QPushButton {
+	border: solid;
+	background-color: #14213D;
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/image/icons/avancar.png</normaloff>:/image/icons/avancar.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>336</width>
+                 <height>29</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="loop">
+               <property name="maximumSize">
+                <size>
+                 <width>38</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QCheckBox {
+    background: transparent;
+    border: none; /* Remove a borda do QCheckBox */
+    padding-left: 0px;
+    spacing: 0px;
+}
+
+QCheckBox::indicator {
+    width: 0px;
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons.qrc">
+                 <normaloff>:/image/icons/loop.png</normaloff>
+                 <activeon>:/image/icons/loop_hover.png</activeon>:/image/icons/loop.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>28</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="tristate">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="playlist">
+           <property name="maximumSize">
+            <size>
+             <width>27</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QCheckBox {
+    background: transparent; /* Define o fundo como transparente */
+    border: none; /* Remove a borda */
+    padding-left: 0px; /* Ajusta o recuo à esquerda para zero (opcional) */
+    spacing: 0px; /* Ajusta o espaçamento para zero (opcional) */
+}
+
+QCheckBox::indicator {
+    width: 0px; /* Define a largura do indicador como zero para remover a caixa */
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/image/icons/playlist.png</normaloff>:/image/icons/playlist.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>33</width>
+             <height>21</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="sound">
+           <property name="styleSheet">
+            <string notr="true">QCheckBox {
+    background: transparent; /* Define o fundo como transparente */
+    border: none; /* Remove a borda */
+    padding-left: 0px; /* Ajusta o recuo à esquerda para zero (opcional) */
+    spacing: 0px; /* Ajusta o espaçamento para zero (opcional) */
+}
+
+QCheckBox::indicator {
+    width: 0px; /* Define a largura do indicador como zero para remover a caixa */
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/image/icons/sound.png</normaloff>:/image/icons/sound.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>33</width>
+             <height>21</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="volume">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>64</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>64</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QSlider {
+    background-color: #14213D;
+    border-radius: 5px;
+}
+
+QSlider::groove:horizontal {
+    background-color: #E5E5E5;
+    height: 5px;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+    width: 16px;
+    height: 16px;
+	border-radius: 8px;
+}
+
+QSlider::sub-page:horizontal{ /* coloca uma cor seguindo o handle */
+	background-color: #183B54
+}</string>
+           </property>
+           <property name="minimum">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="value">
+            <number>1000</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QFrame" name="menu">
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>16</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #14213D;
-border-radius: 5px;</string>
+       <string notr="true">QFrame {
+background-color: #14213D;
+border-radius: 5px;
+}
+
+QPushButton {
+	background-color:#14213D;
+	border: solid;
+	font-size: 22px;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+QPushButton:hover {
+	background-color:#183B54
+}
+
+QPushButton {
+	background-color:#14213D;
+	border: solid;
+}
+</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -76,19 +572,12 @@ border-radius: 5px;</string>
              <property name="font">
               <font>
                <family>Arial</family>
-               <pointsize>16</pointsize>
+               <pointsize>-1</pointsize>
                <bold>true</bold>
               </font>
              </property>
              <property name="styleSheet">
-              <string notr="true">QPushButton {
-	background-color:#14213D;
-	border: solid;
-}
-
-QPushButton:hover {
-	background-color:#183B54
-}</string>
+              <string notr="true"/>
              </property>
              <property name="text">
               <string>Músicas</string>
@@ -103,30 +592,151 @@ QPushButton:hover {
                <height>50</height>
               </size>
              </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>16</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
              <property name="styleSheet">
-              <string notr="true">QPushButton {
-	background-color:#14213D;
-	border: solid;
-}
-
-QPushButton:hover {
-	background-color:#183B54
-}</string>
+              <string notr="true"/>
              </property>
              <property name="text">
               <string>Instalar</string>
              </property>
             </widget>
            </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="minimumSize">
+       <size>
+        <width>202</width>
+        <height>395</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>202</width>
+        <height>1600</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QScrollBar:vertical {
+        border: none;
+        color: #000000;
+        width: 8px;
+}
+
+QScrollBar::handle:vertical {
+	background: #14213D; 
+	border-radius: 4px;
+	min-height: 20px;
+}
+
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::add-line:vertical {
+    height: 0px;
+}
+
+QScrollArea{
+	border: none;
+}
+
+QFrame {
+background-color: #14213D;
+border-radius: 5px;
+}
+
+QPushButton {
+	background-color:#14213D;
+	border: solid;
+	font-size: 16px;
+	font-family: Arial;
+	font-weight: bold;
+	text-align:left;
+	padding-left: 10px;
+}
+
+QPushButton:hover {
+	background-color:#183B54
+}
+</string>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>202</width>
+         <height>403</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QFrame" name="biblioteca">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
-            <spacer name="verticalSpacer">
+            <widget class="QLabel" name="label_2">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>17</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Sua Biblioteca</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -139,13 +749,13 @@ QPushButton:hover {
             </spacer>
            </item>
           </layout>
-         </item>
-        </layout>
-       </item>
-      </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="0" column="1" rowspan="3">
      <widget class="QStackedWidget" name="paginas">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -577,6 +1187,9 @@ QPushButton:hover {
             <bold>true</bold>
            </font>
           </property>
+          <property name="contextMenuPolicy">
+           <enum>Qt::CustomContextMenu</enum>
+          </property>
           <property name="styleSheet">
            <string notr="true">QScrollBar:vertical {
         border: none;
@@ -618,469 +1231,160 @@ QListView::item:hover {
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QFrame" name="bottom_menu">
-      <property name="styleSheet">
-       <string notr="true">QFrame {
-	background-color: #14213D;
-	width: 50%;
-	border-radius: 5px;
-}</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <item>
-          <widget class="QLabel" name="albumLabel">
-           <property name="minimumSize">
-            <size>
-             <width>68</width>
-             <height>61</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>56</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-	border-radius: 5px;
-}</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="artistaLabel">
-           <property name="minimumSize">
-            <size>
-             <width>120</width>
-             <height>73</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>73</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: #E5E5E5</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
+      <widget class="QWidget" name="playlist_pag">
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="QFrame" name="frame_2">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>173</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_10">
            <item>
-            <widget class="QSlider" name="slider">
-             <property name="minimumSize">
-              <size>
-               <width>800</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QSlider {
-    background-color: #14213D;
-    border-radius: 5px;
-}
-
-QSlider::groove:horizontal {
-    background-color: #E5E5E5;
-    height: 5px;
-    border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-    width: 16px;
-    height: 16px;
-	border-radius: 8px;
-}
-
-QSlider::sub-page:horizontal{ /* coloca uma cor seguindo o handle */
-	background-color: #183B54
-}</string>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
+              <widget class="QLabel" name="albumCover">
+               <property name="minimumSize">
                 <size>
-                 <width>40</width>
-                 <height>20</height>
+                 <width>150</width>
+                 <height>150</height>
                 </size>
                </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="random">
                <property name="maximumSize">
                 <size>
-                 <width>49</width>
-                 <height>38</height>
+                 <width>150</width>
+                 <height>150</height>
                 </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QCheckBox {
-    background: transparent;
-    border: none; /* Remove a borda do QCheckBox */
-    padding-left: 0px;
-    spacing: 0px;
-}
-
-QCheckBox::indicator {
-	width: 0px;
-}</string>
                </property>
                <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="icons.qrc">
-                 <normaloff>:/image/icons/random.png</normaloff>:/image/icons/random.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>30</width>
-                 <height>38</height>
-                </size>
-               </property>
-               <property name="tristate">
-                <bool>false</bool>
+                <string>Imagem</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="retroceder">
-               <property name="maximumSize">
-                <size>
-                 <width>49</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: solid;
-	background-color: #14213D;
-}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="icons.qrc">
-                 <normaloff>:/image/icons/retroceder.png</normaloff>:/image/icons/retroceder.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>336</width>
-                 <height>29</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pause">
-               <property name="maximumSize">
-                <size>
-                 <width>49</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: solid;
-	background-color: #14213D;
-}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="icons.qrc">
-                 <normaloff>:/image/icons/pause.png</normaloff>:/image/icons/pause.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="avancar">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>49</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="autoFillBackground">
-                <bool>false</bool>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: solid;
-	background-color: #14213D;
-}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="icons.qrc">
-                 <normaloff>:/image/icons/avancar.png</normaloff>:/image/icons/avancar.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>336</width>
-                 <height>29</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="loop">
-               <property name="maximumSize">
-                <size>
-                 <width>38</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QCheckBox {
-    background: transparent;
-    border: none; /* Remove a borda do QCheckBox */
-    padding-left: 0px;
-    spacing: 0px;
-}
-
-QCheckBox::indicator {
-    width: 0px;
-}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="icons.qrc">
-                 <normaloff>:/image/icons/loop.png</normaloff>
-                 <activeon>:/image/icons/loop_hover.png</activeon>:/image/icons/loop.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>28</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="tristate">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <item>
+                <spacer name="verticalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="playlistNome">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>856</width>
+                   <height>57</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>34</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Aliança</string>
+                 </property>
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="playlistDescription">
+                 <property name="text">
+                  <string>Descrição</string>
+                 </property>
+                 <property name="frame">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
           </layout>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="playlist">
-           <property name="maximumSize">
-            <size>
-             <width>27</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QCheckBox {
-    background: transparent; /* Define o fundo como transparente */
-    border: none; /* Remove a borda */
-    padding-left: 0px; /* Ajusta o recuo à esquerda para zero (opcional) */
-    spacing: 0px; /* Ajusta o espaçamento para zero (opcional) */
+         </widget>
+        </item>
+        <item>
+         <widget class="QListView" name="lista_musicas_playlist">
+          <property name="styleSheet">
+           <string notr="true">QScrollBar:vertical {
+        border: none;
+        color: #000000;
+        width: 8px;
 }
 
-QCheckBox::indicator {
-    width: 0px; /* Define a largura do indicador como zero para remover a caixa */
+QScrollBar::handle:vertical {
+	background: #14213D; 
+	border-radius: 4px;
+	min-height: 20px;
+}
+
+QScrollBar::sub-line:vertical {
+	/*background: transparent;*/
+    height: 0px;
+}
+
+QScrollBar::add-line:vertical {
+	/*background: transparent;*/
+    height: 0px;
+}
+
+QListView::item {
+    border: 1px solid #000;
+    padding: 5px;
+}
+
+QListView::item::selected {
+	background-color:#183B54;
+	color: #FFB30F
+}
+
+QListView::item:hover {
+	background-color:#183B54;
 }</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="icons.qrc">
-             <normaloff>:/image/icons/playlist.png</normaloff>:/image/icons/playlist.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>33</width>
-             <height>21</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="sound">
-           <property name="styleSheet">
-            <string notr="true">QCheckBox {
-    background: transparent; /* Define o fundo como transparente */
-    border: none; /* Remove a borda */
-    padding-left: 0px; /* Ajusta o recuo à esquerda para zero (opcional) */
-    spacing: 0px; /* Ajusta o espaçamento para zero (opcional) */
-}
-
-QCheckBox::indicator {
-    width: 0px; /* Define a largura do indicador como zero para remover a caixa */
-}</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="icons.qrc">
-             <normaloff>:/image/icons/sound.png</normaloff>:/image/icons/sound.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>33</width>
-             <height>21</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="volume">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>64</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QSlider {
-    background-color: #14213D;
-    border-radius: 5px;
-}
-
-QSlider::groove:horizontal {
-    background-color: #E5E5E5;
-    height: 5px;
-    border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-    width: 16px;
-    height: 16px;
-	border-radius: 8px;
-}
-
-QSlider::sub-page:horizontal{ /* coloca uma cor seguindo o handle */
-	background-color: #183B54
-}</string>
-           </property>
-           <property name="minimum">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>1000</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
