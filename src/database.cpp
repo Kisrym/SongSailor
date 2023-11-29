@@ -6,15 +6,15 @@ Database::Database()
 {
     db = QSqlDatabase::addDatabase("QMYSQL");
 
-    db.setDatabaseName("sql10663443");
-    db.setHostName("sql10.freemysqlhosting.net");
+    db.setDatabaseName("");
+    db.setHostName("");
     db.setPort(3306);
-    db.setUserName("sql10663443");
-    db.setPassword("qpLGVtahwv");
+    db.setUserName("");
+    db.setPassword("");
 
     if (db.open()) {
         QSqlQuery query;
-        query.exec("CREATE TABLE IF NOT EXISTS dados (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(30), descricao VARCHAR(30), musicas VARCHAR(300))");
+        query.exec("CREATE TABLE IF NOT EXISTS dados (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(30), descricao VARCHAR(30), musicas VARCHAR(300), imagem LONGBLOB)");
     }
     else {
         qDebug() << "Erro ao conectar ao banco de dados:";
@@ -26,14 +26,13 @@ Database::~Database(){
     db.close();
 }
 
-void Database::createPlaylistDb(QString nome, QString descricao) const{
+void Database::createPlaylistDb(QString nome, QByteArray imagem, QString descricao) const{
     QSqlQuery query;
-    query.prepare("INSERT INTO dados (nome, descricao, musicas) VALUES (?, ?, ?)");
+    query.prepare("INSERT INTO dados (nome, descricao, imagem, musicas) VALUES (?, ?, ?, ?)");
     query.addBindValue(nome);
     query.addBindValue(descricao);
+    query.addBindValue(imagem);
     query.addBindValue("");
-
-    query.exec();
 }
 
 QList<Database::Playlist> Database::loadPlaylistDb() const{
@@ -47,6 +46,7 @@ QList<Database::Playlist> Database::loadPlaylistDb() const{
         playlist.nome = query.value("nome").toString();
         playlist.descricao = query.value("descricao").toString();
         playlist.musicas = query.value("musicas").toString().split(";");
+        playlist.imagem = query.value("imagem").toByteArray();
 
         listaPlaylist.append(playlist);
     }
@@ -54,18 +54,15 @@ QList<Database::Playlist> Database::loadPlaylistDb() const{
     return listaPlaylist;
 }
 
-void Database::alterPlaylistDb(QString novoNome, QString novaDescricao, Editing editando) const{
+void Database::alterPlaylistDb(QStringList playlist, QString novoNome, QString novaDescricao) const{
     QSqlQuery query;
 
-    if (editando == Description){
-        query.prepare("UPDATE dados SET descricao = ? WHERE nome = ?");
-        query.addBindValue(novaDescricao);
-        query.addBindValue(novoNome);
-    }
-    if (editando == Name){
-        query.prepare("UPDATE dados SET nome = ? WHERE nome = ?");
-        query.addBindValue(novoNome);
-    }
+    QString musicas = playlist.join(";") + ";";
+
+    query.prepare("UPDATE dados SET descricao = ?, nome = ? WHERE musicas = ?");
+    query.addBindValue(novaDescricao);
+    query.addBindValue(novoNome);
+    query.addBindValue(musicas);
 
     query.exec();
 }
@@ -83,6 +80,7 @@ Database::Playlist Database::locatePlaylistDb(QString nome) const{
         playlist.nome = query.value("nome").toString();
         playlist.descricao = query.value("descricao").toString();
         playlist.musicas = query.value("musicas").toString().split(";");
+        playlist.imagem = query.value("imagem").toByteArray();
     }
 
     return playlist;
@@ -97,5 +95,4 @@ void Database::addMusicPlaylistDb(QString nomePlaylist, QString nomeMusica) cons
     query.addBindValue(nomePlaylist);
 
     query.exec();
-    qDebug() << db.lastError().text();
 };

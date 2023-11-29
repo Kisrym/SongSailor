@@ -17,13 +17,12 @@ public:
         QString nome;
         QString descricao;
         QStringList musicas;
+        QByteArray imagem;
     };
 
-    enum Editing {Name, Description};
-
-    void createPlaylistDb(QString nome, QString descricao = "Nova Playlist") const;
+    void createPlaylistDb(QString nome, QByteArray imagem, QString descricao = "Nova Playlist") const;
     QList<Playlist> loadPlaylistDb() const;
-    void alterPlaylistDb(QString novoNome, QString novaDescricao, Editing editando) const;
+    void alterPlaylistDb(QStringList playlist, QString novoNome, QString novaDescricao) const;
 
     Playlist locatePlaylistDb(QString nome) const;
     void addMusicPlaylistDb(QString nomePlaylist, QString nomeMusica) const;

@@ -43,11 +43,12 @@ private slots:
 
     //Playlist
     void playlistPag();
-    //void nameDescriptionChanged();
+    void nameDescriptionChanged();
+    void loadPlaylists();
 
     //context menu
     void showContextMenu(const QPoint &pos);
-    void createPlaylistAct(QString musicaNomeDb = ""); // nome da música vinda da database
+    void createPlaylistAct(); // nome da música vinda da database
 
     // config slot
     void config_slot(QString client_id, QString secret_id, QString refresh_token);
@@ -62,7 +63,7 @@ private:
 
     QMap<QString, QString> musicasPlayer; // nome : link_url
     QList<QString> reproduction_list; // qual música será tocada
-    QList<QString> playlist; // playlist inteira
+    QStringList playlist; // playlist inteira
     QString nomeMusicaAtual;
 
     QMediaPlayer *tocador;

@@ -38,10 +38,7 @@ songsailor::songsailor(QWidget *parent)
     tocador->setAudioOutput(audioOutput);
     this->add_music_in_list();
     this->currentListViewChanged(); // colocando a listView atual ao iniciar o programada
-
-    for (Database::Playlist &lista : db.loadPlaylistDb()){
-        this->createPlaylistAct(lista.nome);
-    }
+    this->loadPlaylists(); // carregando as playlists da database
 
     connect(ui->random, &QCheckBox::clicked, this, [=](bool checked){if (checked){ui->random->setIcon(QIcon(":/image/icons/random_hover.png"));}});
     connect(janela, &config::config_signal, this, &songsailor::config_slot);
@@ -91,8 +88,8 @@ songsailor::songsailor(QWidget *parent)
     connect(ui->retroceder, &QPushButton::clicked, this, &songsailor::retroceder);
 
     //Playlist
-    //connect(ui->playlistNome, &QLineEdit::editingFinished, this, &songsailor::nameDescriptionChanged);
-    //connect(ui->playlistDescription, &QLineEdit::editingFinished, this, &songsailor::nameDescriptionChanged);
+    connect(ui->playlistNome, &QLineEdit::editingFinished, this, &songsailor::nameDescriptionChanged);
+    connect(ui->playlistDescription, &QLineEdit::editingFinished, this, &songsailor::nameDescriptionChanged);
 }
 
 songsailor::~songsailor()
@@ -260,8 +257,6 @@ void songsailor::createPlaylist(){
         }
         playlist = reproduction_list;
         reproduction_list.removeFirst(); // removing the current music
-        qDebug() << "reproduction_list: " << reproduction_list;
-        qDebug() << "playlist: " << playlist;
     }
     else {
         for (int c = 0; c < currentModel->rowCount(); c++){
@@ -384,8 +379,9 @@ void songsailor::showContextMenu(const QPoint &pos){
     }
 }
 
-void songsailor::createPlaylistAct(QString musicaNomeDb){// nome da musica vinda da database
-    QString musicaNome = (musicaNomeDb.isEmpty()) ? ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0] : musicaNomeDb; // se o nome não estiver vazio, é para carregar os dados em vez de criar
+void songsailor::createPlaylistAct(){// nome da musica vinda da database
+    QString musicaNome = ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0]; // se o nome não estiver vazio, é para carregar os dados em vez de criar
+
     QPushButton *botao = new QPushButton(musicaNome);
     AudioInfo musica(musicasPlayer.value(musicaNome));
     QPixmap albumCover;
@@ -399,9 +395,22 @@ void songsailor::createPlaylistAct(QString musicaNomeDb){// nome da musica vinda
     connect(botao, &QPushButton::clicked, this, &songsailor::playlistPag);
     //connect(ui->playlistNome, &QLineEdit::textEdited, this, [=](QString novoNome){botao->setText(novoNome);}); // mudando o nome do botão quando o usuário mudar o nome da playlist
     // MODIFICAR PARA FUNCIONAR CORRETAMENTE E CONECTAR COM O SQL
-    if (musicaNomeDb.isEmpty()){
-        db.createPlaylistDb(musica.getTitle());
-        db.addMusicPlaylistDb(musica.getTitle(), musicaNome); // inicialmente é o mesmo nome
+    db.createPlaylistDb(musica.getTitle(), musica.saveImage());
+    db.addMusicPlaylistDb(musica.getTitle(), musicaNome); // inicialmente é o mesmo nome
+}
+
+void songsailor::loadPlaylists(){
+    for (Database::Playlist &playlist : db.loadPlaylistDb()){
+        QPushButton *botao = new QPushButton(playlist.nome);
+        QPixmap albumCover;
+
+        albumCover.loadFromData(playlist.imagem);
+        botao->setMinimumSize(QSize(0, 50));
+        botao->setIcon(QIcon(albumCover));
+        botao->setIconSize(QSize(45, 45));
+
+        ui->biblioteca->layout()->addWidget(botao);
+        connect(botao, &QPushButton::clicked, this, &songsailor::playlistPag);
     }
 }
 
@@ -440,4 +449,20 @@ void songsailor::currentListViewChanged(){
             }
         }
     }
+}
+
+void songsailor::nameDescriptionChanged(){
+    QStringList playlist;
+    currentModel = (currentListView->objectName() == "lista_musicas_player") ? model : playlistModel;
+
+    for (int row = 0; row < currentModel->rowCount(); ++row) {
+        for (int column = 0; column < currentModel->columnCount(); ++column) {
+            QModelIndex index = currentModel->index(row, column);
+            AudioInfo musica(musicasPlayer.value(currentModel->data(index, Qt::DisplayRole).toString().split("\n")[0]));
+
+            playlist.append(musica.getTitle());
+        }
+    }
+
+    db.alterPlaylistDb(playlist, ui->playlistNome->text(), ui->playlistDescription->text());
 }
