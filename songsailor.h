@@ -56,6 +56,7 @@ private:
     Ui::songsailor *ui;
     MusicListModel *model = new MusicListModel(this);
     MusicListModel *playlistModel = new MusicListModel(this);
+    QAbstractItemModel *currentModel;
     ButtonHoverWatcher *watcher = new ButtonHoverWatcher(this);
     Database db;
 

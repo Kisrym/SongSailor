@@ -247,13 +247,14 @@ void songsailor::changeStateIcon(QMediaPlayer::PlaybackState estado){
 void songsailor::createPlaylist(){
     reproduction_list.clear();
     playlist.clear();
+    currentModel = (currentListView->objectName() == "lista_musicas_player") ? model : playlistModel;
 
     if (!ui->random->isChecked()){
         QModelIndex currentIndex = currentListView->currentIndex(); //!
 
-        for (int c = currentIndex.row(); c < model->rowCount(); c++){
-            QModelIndex index = model->index(c, currentIndex.column());
-            AudioInfo musica(musicasPlayer.value(model->data(index, Qt::DisplayRole).toString().split("\n")[0]));
+        for (int c = currentIndex.row(); c < currentModel->rowCount(); c++){
+            QModelIndex index = currentModel->index(c, currentIndex.column());
+            AudioInfo musica(musicasPlayer.value(currentModel->data(index, Qt::DisplayRole).toString().split("\n")[0]));
 
             reproduction_list.append(musica.getTitle());
         }
@@ -263,10 +264,10 @@ void songsailor::createPlaylist(){
         qDebug() << "playlist: " << playlist;
     }
     else {
-        for (int c = 0; c < model->rowCount(); c++){
-            QModelIndex index = model->index(c, 0);
+        for (int c = 0; c < currentModel->rowCount(); c++){
+            QModelIndex index = currentModel->index(c, 0);
 
-            AudioInfo musica(musicasPlayer.value(model->data(index, Qt::DisplayRole).toString().split("\n")[0]));
+            AudioInfo musica(musicasPlayer.value(currentModel->data(index, Qt::DisplayRole).toString().split("\n")[0]));
 
             if (currentListView->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0] != musica.getTitle()){ // removing the current music from the playlist //!
                 reproduction_list.append(musica.getTitle());
@@ -281,10 +282,10 @@ void songsailor::createPlaylist(){
 void songsailor::musicEnded(QMediaPlayer::PlaybackState estado){
     if (estado == QMediaPlayer::StoppedState && !ui->loop->isChecked()){
         if (!reproduction_list.empty()){
-            for (int c = 0; c < model->rowCount(); c++){
-                QModelIndex index = model->index(c, 0);
+            for (int c = 0; c < currentModel->rowCount(); c++){
+                QModelIndex index = currentModel->index(c, 0);
 
-                if (reproduction_list.first() == model->data(index, Qt::DisplayRole).toString().split("\n")[0]){
+                if (reproduction_list.first() == currentModel->data(index, Qt::DisplayRole).toString().split("\n")[0]){
                     currentListView->setCurrentIndex(index); //!
                     this->play();
                     reproduction_list.remove(0);
