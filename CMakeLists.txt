@@ -34,7 +34,7 @@ set(PROJECT_SOURCES
         src/config.json
 
         icons.qrc
-        TODO.md
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

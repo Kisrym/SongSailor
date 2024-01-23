@@ -17,5 +17,8 @@
         <file>icons/sound.png</file>
         <file>icons/sound_hover.png</file>
         <file>icons/music_not_found.png</file>
+        <file>icons/songsailor.png</file>
+        <file>icons/musicas.png</file>
+        <file>icons/instalar.png</file>
     </qresource>
 </RCC>

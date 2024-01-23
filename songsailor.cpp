@@ -19,7 +19,7 @@ songsailor::songsailor(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->lista_musicas_player, &QListView::customContextMenuRequested, this, &songsailor::showContextMenu);
+    connect(ui->lista_musicas_player, &QListView::customContextMenuRequested, this, &songsailor::showContextMenuMusicasPlayer);
 
     ui->pause->installEventFilter(watcher);
     ui->avancar->installEventFilter(watcher);       // hover in the player buttons
@@ -54,7 +54,6 @@ songsailor::songsailor(QWidget *parent)
 
     //Player
     connect(ui->add_directory, &QPushButton::clicked, this, &songsailor::add_directory);
-
     connect(ui->lista_musicas_player, &QListView::doubleClicked, this, [=]{
         reproduction_list.clear();
         this->play();
@@ -65,10 +64,6 @@ songsailor::songsailor(QWidget *parent)
         this->play();
         this->createPlaylist();
     });
-    /*
-    connect(ui->lista_musicas_player, &QListView::doubleClicked, this, &songsailor::play);
-    connect(ui->lista_musicas_player, &QListView::doubleClicked, this, &songsailor::createPlaylist);
-    */
     connect(tocador, &QMediaPlayer::durationChanged, this, [=](qint64 v){ui->slider->setMaximum(v / 1000);});
     connect(tocador, &QMediaPlayer::positionChanged, this, [=](qint64 v){ui->slider->setValue(v / 1000);});
 
@@ -180,13 +175,16 @@ void songsailor::install(){
 }
 
 void songsailor::add_music_in_list(){
+    if (!musicasPlayer.isEmpty()){
+        musicasPlayer.clear();
+        model->clear();
+    }
     QFile file("paths.txt");
     if (file.open(QIODevice::ReadOnly)){
         QTextStream stream(&file);
         while (!stream.atEnd()){
             QDir directory(stream.readLine());
             QStringList musicas = directory.entryList(QStringList() << "*.mp3", QDir::Files);
-
             for (QString &m : musicas){
                 AudioInfo musica(directory.absoluteFilePath(m)); // getting the info from each music in the directory
                 musicasPlayer[musica.getTitle()] = directory.absoluteFilePath(m);
@@ -205,7 +203,7 @@ void songsailor::add_directory(){
     if (file.open(QIODevice::ReadWrite)){
         QTextStream stream(&file);
         if (!stream.readAll().contains(path)){
-            stream << path << Qt::endl;
+            stream << Qt::endl << path << Qt::endl;
         }
 
     }
@@ -345,7 +343,7 @@ void songsailor::config_slot(QString client_id, QString secret_id, QString refre
     janela->close();
 }
 
-void songsailor::showContextMenu(const QPoint &pos){
+void songsailor::showContextMenuMusicasPlayer(const QPoint &pos){
     QListView *listView = qobject_cast<QListView *>(sender());
     if (!listView){
         return;
@@ -374,8 +372,24 @@ void songsailor::showContextMenu(const QPoint &pos){
             this->createPlaylistAct();
         }
         if (selectedAction == deleteAct){
-            qDebug() << "excluindo playlist";
+            db.deleteMusicPlaylistsDb(ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0]);
+            qDebug() << QFile::remove(musicasPlayer.value(index.data(Qt::DisplayRole).toString().split("\n")[0]));
+            this->add_music_in_list();
         }
+    }
+}
+
+void songsailor::showContextMenuPlaylists(const QPoint &pos){
+    QPushButton *botao = qobject_cast<QPushButton *>(sender());
+    QMenu menu;
+    QAction *excluirOption = new QAction("Excluir playlist", this);
+
+    menu.addAction(excluirOption);
+    QAction *selectedAction = menu.exec(botao->mapToGlobal(pos));
+
+    if (selectedAction == excluirOption){
+        db.deletePlaylistDb(botao->text());
+        delete botao;
     }
 }
 
@@ -383,6 +397,8 @@ void songsailor::createPlaylistAct(){// nome da musica vinda da database
     QString musicaNome = ui->lista_musicas_player->currentIndex().data(Qt::DisplayRole).toString().split("\n")[0]; // se o nome não estiver vazio, é para carregar os dados em vez de criar
 
     QPushButton *botao = new QPushButton(musicaNome);
+    botao->setContextMenuPolicy(Qt::CustomContextMenu);
+
     AudioInfo musica(musicasPlayer.value(musicaNome));
     QPixmap albumCover;
 
@@ -393,8 +409,8 @@ void songsailor::createPlaylistAct(){// nome da musica vinda da database
 
     ui->biblioteca->layout()->addWidget(botao);
     connect(botao, &QPushButton::clicked, this, &songsailor::playlistPag);
-    //connect(ui->playlistNome, &QLineEdit::textEdited, this, [=](QString novoNome){botao->setText(novoNome);}); // mudando o nome do botão quando o usuário mudar o nome da playlist
-    // MODIFICAR PARA FUNCIONAR CORRETAMENTE E CONECTAR COM O SQL
+    connect(botao, &QPushButton::customContextMenuRequested, this, &songsailor::showContextMenuPlaylists);
+
     db.createPlaylistDb(musica.getTitle(), musica.saveImage());
     db.addMusicPlaylistDb(musica.getTitle(), musicaNome); // inicialmente é o mesmo nome
 }
@@ -402,6 +418,8 @@ void songsailor::createPlaylistAct(){// nome da musica vinda da database
 void songsailor::loadPlaylists(){
     for (Database::Playlist &playlist : db.loadPlaylistDb()){
         QPushButton *botao = new QPushButton(playlist.nome);
+        botao->setContextMenuPolicy(Qt::CustomContextMenu);
+
         QPixmap albumCover;
 
         albumCover.loadFromData(playlist.imagem);
@@ -411,6 +429,7 @@ void songsailor::loadPlaylists(){
 
         ui->biblioteca->layout()->addWidget(botao);
         connect(botao, &QPushButton::clicked, this, &songsailor::playlistPag);
+        connect(botao, &QPushButton::customContextMenuRequested, this, &songsailor::showContextMenuPlaylists);
     }
 }
 

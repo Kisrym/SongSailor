@@ -23,9 +23,11 @@ public:
     void createPlaylistDb(QString nome, QByteArray imagem, QString descricao = "Nova Playlist") const;
     QList<Playlist> loadPlaylistDb() const;
     void alterPlaylistDb(QStringList playlist, QString novoNome, QString novaDescricao) const;
+    void deletePlaylistDb(QString nome) const;
 
     Playlist locatePlaylistDb(QString nome) const;
     void addMusicPlaylistDb(QString nomePlaylist, QString nomeMusica) const;
+    void deleteMusicPlaylistsDb(QString nomeMusica) const;
 
 private:
     QSqlDatabase db;

@@ -47,7 +47,8 @@ private slots:
     void loadPlaylists();
 
     //context menu
-    void showContextMenu(const QPoint &pos);
+    void showContextMenuMusicasPlayer(const QPoint &pos);
+    void showContextMenuPlaylists(const QPoint &pos);
     void createPlaylistAct(); // nome da música vinda da database
 
     // config slot

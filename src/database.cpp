@@ -6,11 +6,11 @@ Database::Database()
 {
     db = QSqlDatabase::addDatabase("QMYSQL");
 
-    db.setDatabaseName("");
-    db.setHostName("");
+    db.setDatabaseName("songsailor");
+    db.setHostName("127.0.0.1");
     db.setPort(3306);
-    db.setUserName("");
-    db.setPassword("");
+    db.setUserName("root");
+    db.setPassword("kaio1234");
 
     if (db.open()) {
         QSqlQuery query;
@@ -20,6 +20,8 @@ Database::Database()
         qDebug() << "Erro ao conectar ao banco de dados:";
         qDebug() << db.lastError().text();
     }
+
+    this->deleteMusicPlaylistsDb("Benzim");
 }
 
 Database::~Database(){
@@ -33,6 +35,8 @@ void Database::createPlaylistDb(QString nome, QByteArray imagem, QString descric
     query.addBindValue(descricao);
     query.addBindValue(imagem);
     query.addBindValue("");
+
+    query.exec();
 }
 
 QList<Database::Playlist> Database::loadPlaylistDb() const{
@@ -56,13 +60,20 @@ QList<Database::Playlist> Database::loadPlaylistDb() const{
 
 void Database::alterPlaylistDb(QStringList playlist, QString novoNome, QString novaDescricao) const{
     QSqlQuery query;
-
     QString musicas = playlist.join(";") + ";";
 
     query.prepare("UPDATE dados SET descricao = ?, nome = ? WHERE musicas = ?");
     query.addBindValue(novaDescricao);
     query.addBindValue(novoNome);
     query.addBindValue(musicas);
+
+    query.exec();
+}
+
+void Database::deletePlaylistDb(QString nome) const{
+    QSqlQuery query;
+    query.prepare("DELETE FROM dados WHERE nome = ?");
+    query.addBindValue(nome);
 
     query.exec();
 }
@@ -96,3 +107,21 @@ void Database::addMusicPlaylistDb(QString nomePlaylist, QString nomeMusica) cons
 
     query.exec();
 };
+
+void Database::deleteMusicPlaylistsDb(QString nomeMusica) const{
+    QSqlQuery query;
+    QSqlQuery query2;
+    nomeMusica = nomeMusica + ";";
+
+    query.exec("SELECT * FROM dados");
+    while (query.next()){
+        if (query.value("musicas").toString().contains(nomeMusica)){
+            QString novasMusicas = query.value("musicas").toString().replace(nomeMusica, "");
+            qDebug() << novasMusicas;
+            query2.prepare("UPDATE dados SET musicas = ? WHERE nome = ?");
+            query2.addBindValue(novasMusicas);
+            query2.addBindValue(query.value("nome").toString());
+            query2.exec();
+        }
+    }
+}
