@@ -102,6 +102,7 @@ void songsailor::instalarMusicas(QString audio, QString type){
     QStringList arguments;
     QString path = QFileDialog::getExistingDirectory(this, "Diretório para Instalação", QDir::currentPath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
+    QDir::setCurrent("/home/kaio/Desktop/Storage/projetos_qt/SongSailor/");
     arguments << "src/music_downloader.py" << "install" << "-type" << type << "-audio" << audio << "--path" << path;
 
     if (this->isPlaylist){
@@ -111,14 +112,14 @@ void songsailor::instalarMusicas(QString audio, QString type){
     QFuture<void> future = QtConcurrent::run([this, arguments](){ // resumidamente, isso sincroniza as threads com o resultado no final, deixando "assíncrono"
         QProcess process;
 
-        process.setProgram("python");
+        process.setProgram("python3");
         process.setArguments(arguments);
         /*
         process.setReadChannel(QProcess::StandardError);
         QObject::connect(&process, &QProcess::readyReadStandardError, [&]() {
             qDebug() << process.readAllStandardError();
-        });
-        */
+        });*/
+
         QObject::connect(&process, &QProcess::readyReadStandardOutput, this, [&]() {
             QTextStream in(&process);
             while (!in.atEnd()) {
@@ -128,9 +129,9 @@ void songsailor::instalarMusicas(QString audio, QString type){
         });
 
         process.start();
-        process.waitForFinished(-1);
+        process.waitForFinished(-1); // -1 deixa a espera infinita
 
-        if (process.exitCode() == 0){ // -1 deixa a espera infinita
+        if (process.exitCode() == 0){
             ui->terminal->setText(ui->terminal->text() + "\nInstalação Finalizada");
             QMetaObject::invokeMethod(this, "add_music_in_list", Qt::QueuedConnection); // equivalente a "this->add_music_in_list", só que no future
             process.deleteLater();

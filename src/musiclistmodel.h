@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QAbstractListModel>
-
+#include <QMap>
 #include "musicitem.h"
 
 class MusicListModel : public QAbstractListModel
@@ -22,6 +22,9 @@ public:
 
 private:
     QList<MusicItem> m_items;
+    QMap<QString, QPixmap> m_imageCache;
+
+    QPixmap loadAndCacheImage(const MusicItem &item) const;
 };
 
 #endif // MUSICLISTMODEL_H
